@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void navigatTo(context,widget) {
   Navigator.push(
@@ -85,6 +86,22 @@ Widget defultTextButton({
           fontSize: 18.0
         ),
       )
+  );
+}
+
+
+void defultToast({
+    required String message,
+    Color background = Colors.green,
+   }){
+  Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 4,
+      backgroundColor: background,
+      textColor: Colors.white,
+      fontSize: 16.0
   );
 }
 

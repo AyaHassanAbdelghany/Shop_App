@@ -5,10 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/network/end_point.dart';
 import 'package:shop_app/network/remote/dio_helper.dart';
 
+import '../../../models/login/login_model.dart';
+
 class LoginCubit extends Cubit<LoginStates>{
 
   IconData iconPassword = Icons.remove_red_eye_outlined;
   bool isPassword = true ;
+  LoginModel? loginModel ;
+  Color backgroundToast = Colors.green;
 
   LoginCubit() : super(LoginInitialState());
 
@@ -23,8 +27,10 @@ class LoginCubit extends Cubit<LoginStates>{
           'password' : password
         }
     ).then((value) {
-      print(value);
-      emit(LoginSuccessState());
+      print(value.data);
+      loginModel = LoginModel.formJson(value.data);
+      loginModel!.status ? backgroundToast = Colors.green : backgroundToast = Colors.red;
+     emit(LoginSuccessState(loginModel!));
     }).catchError((error){
       emit(LoginErrorState(error.toString()));
     });

@@ -13,6 +13,8 @@ class LoginScreen extends StatelessWidget {
   var passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
 
+  LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +22,14 @@ class LoginScreen extends StatelessWidget {
       body: BlocProvider(
         create: (context) => LoginCubit(),
         child: BlocConsumer<LoginCubit,LoginStates>(
-          listener: (context,state) {},
+          listener: (context,state) {
+          if(state is LoginSuccessState){
+            defultToast(
+                message: state.loginModel.message ?? "",
+                background: LoginCubit.getInstance(context).backgroundToast
+            );
+          }
+          },
           builder: (context,state){
             var loginCubit = LoginCubit.getInstance(context);
             return  Center(
@@ -45,7 +54,7 @@ class LoginScreen extends StatelessWidget {
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 35.0,
                         ),
                         defultTextFormField(
@@ -60,7 +69,7 @@ class LoginScreen extends StatelessWidget {
                               return null;
                             }
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20.0,
                         ),
                         defultTextFormField(
@@ -80,7 +89,7 @@ class LoginScreen extends StatelessWidget {
                               return null;
                             }
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 30.0,
                         ),
                         ConditionalBuilder(
@@ -95,9 +104,9 @@ class LoginScreen extends StatelessWidget {
                               text: 'Login',
                               background: primaryColor,
                             ),
-                          fallback: (context) =>Center(child: CircularProgressIndicator()),
+                          fallback: (context) =>const Center(child: CircularProgressIndicator()),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20.0 ,
                         ),
                         Row(
@@ -111,7 +120,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             defultTextButton(
                                 function: (){
-                                  navigatTo(context, RegisterScreen());
+                                  navigatTo(context, const RegisterScreen());
                                 },
                                 text: 'register'
                             )
