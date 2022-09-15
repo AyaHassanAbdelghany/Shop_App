@@ -92,18 +92,38 @@ Widget defultTextButton({
 
 void defultToast({
     required String message,
-    Color background = Colors.green,
+  required ToastStates state,
    }){
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 4,
-      backgroundColor: background,
+      backgroundColor: chooseColorToast(state),
       textColor: Colors.white,
       fontSize: 16.0
   );
 }
+
+Color? chooseColorToast(ToastStates state){
+  Color? background;
+   switch(state){
+     case ToastStates.SUSSUCE :
+       background = Colors.green;
+       break;
+
+     case ToastStates.ERROR :
+       background = Colors.red;
+       break;
+
+     case ToastStates.WARNING :
+       background = Colors.amberAccent;
+       break;
+
+   }
+  return background;
+}
+enum ToastStates{ SUSSUCE , ERROR , WARNING}
 
 
 

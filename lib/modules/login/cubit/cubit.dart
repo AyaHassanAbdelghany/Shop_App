@@ -12,7 +12,6 @@ class LoginCubit extends Cubit<LoginStates>{
   IconData iconPassword = Icons.remove_red_eye_outlined;
   bool isPassword = true ;
   LoginModel? loginModel ;
-  Color backgroundToast = Colors.green;
 
   LoginCubit() : super(LoginInitialState());
 
@@ -27,9 +26,7 @@ class LoginCubit extends Cubit<LoginStates>{
           'password' : password
         }
     ).then((value) {
-      print(value.data);
       loginModel = LoginModel.formJson(value.data);
-      loginModel!.status ? backgroundToast = Colors.green : backgroundToast = Colors.red;
      emit(LoginSuccessState(loginModel!));
     }).catchError((error){
       emit(LoginErrorState(error.toString()));

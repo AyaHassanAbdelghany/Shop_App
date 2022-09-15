@@ -24,7 +24,7 @@ fontWeight: FontWeight.bold,
 bottomNavigationBarTheme: const BottomNavigationBarThemeData(
 type: BottomNavigationBarType.fixed,
 unselectedItemColor: Colors.white,
-selectedItemColor: Colors.deepOrange,
+selectedItemColor: primaryColor,
 backgroundColor: Colors.black54,
 elevation: 20.0,
 ),
@@ -58,7 +58,7 @@ fontWeight: FontWeight.bold,
 ),
 bottomNavigationBarTheme: const BottomNavigationBarThemeData(
 type: BottomNavigationBarType.fixed,
-selectedItemColor: Colors.deepOrange,
+selectedItemColor: primaryColor,
 unselectedItemColor: Colors.black,
 elevation: 20.0,
 backgroundColor: Colors.white

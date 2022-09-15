@@ -1,9 +1,11 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/layout/shop_layout.dart';
 import 'package:shop_app/modules/login/cubit/cubit.dart';
 import 'package:shop_app/modules/login/cubit/states.dart';
 import 'package:shop_app/modules/register/register_screen.dart';
+import 'package:shop_app/network/local/cache_helper.dart';
 import 'package:shop_app/shared/components/components.dart';
 import 'package:shop_app/shared/components/constants.dart';
 
@@ -23,11 +25,17 @@ class LoginScreen extends StatelessWidget {
         create: (context) => LoginCubit(),
         child: BlocConsumer<LoginCubit,LoginStates>(
           listener: (context,state) {
-          if(state is LoginSuccessState){
+          if(state is LoginSuccessState) {
+            if (state.loginModel.status) {
+              CacheHelper.saveData(key: 'token', value: state.loginModel.data!.token);
+              navigatAndFinish(context, ShopLayout());
+            }
+          else{
             defultToast(
-                message: state.loginModel.message ?? "",
-                background: LoginCubit.getInstance(context).backgroundToast
+              message: state.loginModel.message ?? "",
+              state: ToastStates.ERROR,
             );
+          }
           }
           },
           builder: (context,state){

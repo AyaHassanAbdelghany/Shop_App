@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/network/local/cache_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../models/on_boarding/on_boarding_model.dart';
@@ -28,9 +29,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       appBar: AppBar(
         actions: [
           defultTextButton(
-              function: (){
-                navigatAndFinish(context, LoginScreen());
-              },
+              function: submit,
               text: 'Skip'
           )
         ],
@@ -103,7 +102,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 TextButton(
                     onPressed: () {
                       if (isLast) {
-                        navigatAndFinish(context, LoginScreen());
+                      submit();
                       }
                       else{
                         boardingController.nextPage(
@@ -129,5 +128,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         ],
       ),
     );
+  }
+
+  void submit(){
+    CacheHelper.saveData(key: 'onBoarding', value: true);
+    navigatAndFinish(context, LoginScreen());
   }
 }
