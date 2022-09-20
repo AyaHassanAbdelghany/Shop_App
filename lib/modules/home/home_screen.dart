@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layout/cubit/cubit.dart';
+import 'package:shop_app/models/categories/category_model.dart';
+import 'package:shop_app/models/categories/data_model.dart';
 import 'package:shop_app/models/home/home_model.dart';
 import 'package:shop_app/models/home/product_model.dart';
+import 'package:shop_app/shared/components/components.dart';
 import 'package:shop_app/shared/components/constants.dart';
 
 import '../../layout/cubit/states.dart';
@@ -16,23 +19,34 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit , ShopStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(state is ShopChangeFavouriteSuccessState ){
+          if(!state.changeFavouriteModel.status){
+            defultToast(message: state.changeFavouriteModel.message!, state: ToastStates.ERROR);
+          }
+        }
+        else if(state is ShopChangeFavouriteErrorState ){
+            defultToast(message: 'Can\'t add to favourite', state: ToastStates.ERROR);
+
+        }
+      },
       builder:(context, state) {
         return ConditionalBuilder(
-            condition: ShopCubit.getInstance(context).homeModel != null ,
-            builder:(context) =>buildProduct(ShopCubit.getInstance(context).homeModel) ,
+            condition: ShopCubit.getInstance(context).homeModel != null && ShopCubit.getInstance(context).categoryModel != null ,
+            builder:(context) =>buildProduct(ShopCubit.getInstance(context).homeModel,ShopCubit.getInstance(context).categoryModel,context) ,
           fallback: (context) => Center(child: CircularProgressIndicator()),
         );
       },
     );
   }
 
-  Widget buildProduct(HomeModel? model){
+  Widget buildProduct(HomeModel? homeModel,CategoryModel? categoryModel,BuildContext context){
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
          CarouselSlider(
-             items: model!.data!.banners.map((e) =>
+             items: homeModel!.data!.banners.map((e) =>
                Image(
                  image: NetworkImage('${e.image}'),
                  width: double.infinity,
@@ -59,6 +73,50 @@ class HomeScreen extends StatelessWidget {
           SizedBox(
             height: 20.0,
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0
+            ),
+            child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Container(
+                  height: 100.0,
+                  child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                      itemBuilder: (context,index)=> buildCategory(categoryModel.model!.data[index]),
+                      separatorBuilder:(context,index)=> SizedBox(width: 8.0),
+                      itemCount: categoryModel!.model!.data.length
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  'New Products',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
           Container(
             color: Colors.grey[200],
             child: GridView.count(
@@ -69,8 +127,8 @@ class HomeScreen extends StatelessWidget {
               crossAxisSpacing: 10.0,
               childAspectRatio: 1/1.72,
               children: List.generate(
-                  model.data!.products.length,
-                      (index) => buildGridProduct(model.data!.products[index])
+                  homeModel.data!.products.length,
+                      (index) => buildGridProduct(homeModel.data!.products[index],context)
               )
             ),
           ),
@@ -79,7 +137,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget buildGridProduct(ProductModel model){
+  Widget buildGridProduct(ProductModel model,BuildContext context){
     return Container(
       color: Colors.white,
       child: Column(
@@ -102,7 +160,7 @@ class HomeScreen extends StatelessWidget {
                 child: Text(
                   'DISCOUNT',
                   style: TextStyle(
-                    fontSize: 10.0,
+                    fontSize: 14.0,
                     color: Colors.white,
                   ),
                 ),
@@ -149,10 +207,18 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Spacer(),
                     IconButton(
-                        onPressed: (){},
-                        icon: Icon(
-                          Icons.favorite_border,
-                          size: 20.0,
+                        onPressed: (){
+                          print("id ${model.id}");
+                          ShopCubit.getInstance(context).changeFavourite(model.id);
+                        },
+                        icon: CircleAvatar(
+                          radius: 18.0,
+                          backgroundColor: ShopCubit.getInstance(context).favourites[model.id] !=true ? Colors.grey :primaryColor ,
+                          child: Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                            size: 18.0,
+                          ),
                         )
                     )
                   ],
@@ -165,4 +231,38 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget buildCategory(DataModel data) => Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: [
+          Image(
+              image: NetworkImage('${data.image}'),
+              height: 100.0,
+              width: 100.0,
+             fit: BoxFit.cover,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 5.0,
+              vertical: 5.0
+            ),
+            width: 100.0,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(7.0),
+            ) ,
+            child: Text(
+              '${data.name}',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
+
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      );
 }
