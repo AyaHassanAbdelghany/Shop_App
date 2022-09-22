@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme:lightTheme,
         darkTheme: darkTheme,
-        home:widget ,
+        home: widget ,
       ),
     );
   }

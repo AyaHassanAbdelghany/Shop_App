@@ -49,8 +49,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             });
           }
           },
-          itemBuilder: (context ,index)=>buildOnBoardingItem(
-              onBoardingList[index],)
+          itemBuilder: (context ,index)=>buildOnBoardingItem(onBoardingList[index],),
+          itemCount: onBoardingList.length,
+
       ),
     );
   }
@@ -84,7 +85,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 SmoothPageIndicator(
                   controller: boardingController,
                   count: onBoardingList.length,
-                  effect: WormEffect(
+                  effect: ExpandingDotsEffect(
                     dotColor: Colors.grey,
                     activeDotColor: primaryColor,
                     dotHeight: 15,
@@ -106,7 +107,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             curve: Curves.fastLinearToSlowEaseIn
                         );
                       }
-
                     },
                     child: Text(
                       'Next',
