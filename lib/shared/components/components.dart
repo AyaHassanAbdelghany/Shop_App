@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:shop_app/models/home/product_model.dart';
+import '../../layout/cubit/cubit.dart';
 import '../../modules/login/login_screen.dart';
 import '../../network/local/cache_helper.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'constants.dart';
 
 void navigatTo(context,widget) {
   Navigator.push(
@@ -31,25 +34,22 @@ Widget defultTextFormField({
   IconData? sufix,
   VoidCallback? sufixOnPressed,
 }) {
-  return Container(
-
-    child: TextFormField(
-      obscureText: isPassword,
-      controller: controller,
-      keyboardType: type,
-      onChanged: functionOnChange,
-      decoration: InputDecoration(
-          prefixIcon: Icon(
-            prefix,
-          ),
-          suffixIcon: sufix != null
-              ? IconButton(onPressed: sufixOnPressed, icon: Icon(sufix))
-              : null,
-          border: OutlineInputBorder(),
-          label: Text(label)
-      ),
-      validator: functionValidator,
+  return TextFormField(
+    obscureText: isPassword,
+    controller: controller,
+    keyboardType: type,
+    onChanged: functionOnChange,
+    decoration: InputDecoration(
+        prefixIcon: Icon(
+          prefix,
+        ),
+        suffixIcon: sufix != null
+            ? IconButton(onPressed: sufixOnPressed, icon: Icon(sufix))
+            : null,
+        border: const OutlineInputBorder(),
+        label: Text(label)
     ),
+    validator: functionValidator,
   );
 }
 
@@ -67,7 +67,7 @@ Widget defualtButton({
       onPressed: function,
       child: Text(
         isUppercase ? text.toUpperCase() : text,
-        style: TextStyle(
+        style: const TextStyle(
             color: Colors.white,
             fontSize: 20.0
         ),
@@ -84,7 +84,7 @@ Widget defultTextButton({
       onPressed: function,
       child: Text(
           text.toUpperCase(),
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 18.0
         ),
@@ -123,6 +123,112 @@ void signOut(context)
     }
   });
 }
+
+
+Widget buildProductItem(ProductModel? model,BuildContext context, { bool isOldPrice = true}) =>
+    Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: SizedBox(
+        height: 120.0,
+        child: Row(
+          children: [
+            Stack(
+              alignment: AlignmentDirectional.bottomStart,
+              children: [
+                SizedBox(
+                  width: 120.0,
+                  height: 120.0,
+                  child: CachedNetworkImage(
+                    imageUrl: '${model!.image}',
+                    progressIndicatorBuilder: (context, url, downloadProgress) =>
+                        CircularProgressIndicator(
+                          value: downloadProgress.progress,
+                        ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.downloading, color: Colors.grey),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                if(model.discount!=0 && isOldPrice)
+                  Container(
+                    color: Colors.red,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                    ),
+                    child: const Text(
+                      'DISCOUNT',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(
+              width: 20.0,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${model.name}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      height: 1.2,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      Text(
+                        '${model.price}',
+                        style: const TextStyle(
+                          fontSize: 15.0,
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20.0,
+                      ),
+                      if(model.discount!=0 && isOldPrice)
+                        Text(
+                          '${model.oldPrice}',
+                          style: const TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.lineThrough, decorationColor: Colors.cyan
+                          ),
+                        ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: (){
+                            ShopCubit.getInstance(context).changeFavourite(model.id);
+                          },
+                          icon: CircleAvatar(
+                            radius: 18.0,
+                            backgroundColor: ShopCubit.getInstance(context).favourites[model.id] !=true ? Colors.grey :primaryColor ,
+                            child: const Icon(
+                              Icons.favorite_border,
+                              color: Colors.white,
+                              size: 18.0,
+                            ),
+                          )
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
 
 Color? chooseColorToast(ToastStates state){
   Color? background;

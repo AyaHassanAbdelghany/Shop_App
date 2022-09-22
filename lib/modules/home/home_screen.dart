@@ -10,6 +10,7 @@ import 'package:shop_app/models/home/home_model.dart';
 import 'package:shop_app/models/home/product_model.dart';
 import 'package:shop_app/shared/components/components.dart';
 import 'package:shop_app/shared/components/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../layout/cubit/states.dart';
 
@@ -27,7 +28,6 @@ class HomeScreen extends StatelessWidget {
         }
         else if(state is ShopChangeFavouriteErrorState ){
             defultToast(message: 'Can\'t add to favourite', state: ToastStates.ERROR);
-
         }
       },
       builder:(context, state) {
@@ -57,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                height: 250.0,
                autoPlay: true,
                autoPlayInterval: Duration(
-                 seconds: 3,
+                 seconds: 2,
                ),
                reverse: false,
                initialPage: 0,
@@ -146,10 +146,15 @@ class HomeScreen extends StatelessWidget {
           Stack(
             alignment: AlignmentDirectional.bottomStart,
             children: [
-              Image(
-                  image: NetworkImage('${model.image}'),
-                  height: 240.0,
-                  width: double.infinity,
+              CachedNetworkImage(
+                imageUrl: '${model!.image}',
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(),
+                errorWidget: (context, url, error) =>
+                const Icon(Icons.downloading, color: Colors.grey),
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 240.0,
               ),
               if(model.discount!=0)
               Container(

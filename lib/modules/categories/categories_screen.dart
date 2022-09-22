@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layout/cubit/cubit.dart';
 import 'package:shop_app/layout/cubit/states.dart';
 import 'package:shop_app/models/categories/data_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({Key? key}) : super(key: key);
@@ -30,11 +32,15 @@ class CategoriesScreen extends StatelessWidget {
 
   Widget buildItemCategory(DataModel data) => Row(
     children: [
-      Image(
-        image: NetworkImage('${data.image}'),
-        height: 120.0,
-        width: 120.0,
+      CachedNetworkImage(
+        imageUrl: '${data!.image}',
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(),
+        errorWidget: (context, url, error) =>
+        const Icon(Icons.downloading, color: Colors.grey),
         fit: BoxFit.cover,
+        width: 120.0,
+        height: 120.0,
       ),
       SizedBox(
         width: 10.0,
