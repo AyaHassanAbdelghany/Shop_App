@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layout/cubit/states.dart';
 import 'package:shop_app/models/favourities/change_favourite_model.dart';
 import 'package:shop_app/models/favourities/favourite_model.dart';
+import 'package:shop_app/models/login/login_model.dart';
 import 'package:shop_app/modules/categories/categories_screen.dart';
 import 'package:shop_app/modules/favourite/favourite_screen.dart';
 import 'package:shop_app/modules/settings/settings_screen.dart';
@@ -21,12 +22,14 @@ class ShopCubit extends Cubit<ShopStates>{
     const HomeScreen(),
     const CategoriesScreen(),
     const FavouriteScreen(),
-    const SettingsScreen(),
+     SettingsScreen(),
   ];
   HomeModel? homeModel ;
   CategoryModel? categoryModel;
   ChangeFavouriteModel? changeFavouriteModel;
   FavouriteModel? favouriteModel;
+  LoginModel? loginModel;
+
   Map<int,bool>  favourites = Map() ;
 
   ShopCubit() : super(ShopInitialState());
@@ -73,7 +76,6 @@ class ShopCubit extends Cubit<ShopStates>{
   void changeFavourite(int? productId){
     favourites[productId!] = !favourites[productId]!;
     emit(ShopChangeFavouriteState());
-
     DioHelper.postData(
         url: URL_FAVOURITES,
         data: {
@@ -96,7 +98,7 @@ class ShopCubit extends Cubit<ShopStates>{
   }
 
   void getFavourite(){
-    emit(ShopFavouriteLoadingState());
+    favouriteModel = null;
     DioHelper.getData(
         url: URL_FAVOURITES,
         token: token
@@ -105,6 +107,41 @@ class ShopCubit extends Cubit<ShopStates>{
       emit(ShopGetFavouriteSuccessState());
     }).catchError((error){
       emit(ShopGetFavouriteErrorState());
+    });
+  }
+
+  void getProfile(){
+    DioHelper.getData(
+        url: URL_PROFILE,
+        token: token
+    ).then((value){
+      loginModel = LoginModel.formJson(value.data);
+      emit(ShopProfileSuccessState());
+    }).catchError((error){
+      emit(ShopProfileErrorState());
+    });
+  }
+
+  void updateProfile({
+  required String email,
+    required String phone,
+    required String name,
+
+  }){
+    emit(ShopUpdateProfileLoadingState());
+    DioHelper.putData(
+        url: URL_UPDATE_PROFILE,
+        data: {
+          'email': email,
+          'phone': phone,
+          'name': name
+        },
+        token: token
+    ).then((value){
+      loginModel = LoginModel.formJson(value.data);
+      emit(ShopUpdateProfileSuccessState());
+    }).catchError((error){
+      emit(ShopUpdateProfileErrorState());
     });
   }
 }

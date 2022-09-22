@@ -1,8 +1,12 @@
 const String BASE_URL = 'https://student.valuxapps.com/api/';
 const String URL_LOGIN = 'login';
+const String URL_REGISTER= 'register';
 const String URL_HOME = 'home';
 const String URL_CATEGORIES = 'categories';
-const String URL_FAVOURITES = 'favourites';
+const String URL_FAVOURITES = 'favorites';
+const URL_PROFILE = 'profile';
+const URL_UPDATE_PROFILE = 'update-profile';
+const URL_SEARCH = 'products/search';
 const String KEY_TYPE = 'Content-Type';
 const String VALUE_TYPE = 'application/json';
 const String KEY_LANG = 'lang';

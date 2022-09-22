@@ -16,11 +16,19 @@ class FavouriteScreen extends StatelessWidget {
     return  BlocConsumer<ShopCubit,ShopStates>(
       listener: (context,state){},
       builder: (context,state) => ConditionalBuilder(
-        condition: state !is ShopFavouriteLoadingState ,
+        condition: ShopCubit.getInstance(context).favouriteModel !=null ,
         builder: (context) =>
           ListView.separated(
-            itemBuilder:(context,index)=> buildFavouriteItem(ShopCubit.getInstance(context).favouriteModel!.data!.data[index],context),
-            separatorBuilder: (context,index)=>Container(),
+            itemBuilder:(context,index)=> buildFavouriteItem(
+                ShopCubit.getInstance(context).favouriteModel!.data!.data[index],context),
+            separatorBuilder: (context,index)=>Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                width: double.infinity,
+                height: 1,
+                color: Colors.grey,
+              ),
+            ),
             itemCount: ShopCubit.getInstance(context).favouriteModel!.data!.data.length
         ),
         fallback: (context) =>Center(child: CircularProgressIndicator()) ,
@@ -28,90 +36,99 @@ class FavouriteScreen extends StatelessWidget {
     );
   }
 
-  Widget buildFavouriteItem(DataModel model,BuildContext context) =>Row(
-    children: [
-      Stack(
-        alignment: AlignmentDirectional.bottomStart,
-        children: [
-          Image(
-            image: NetworkImage('${model.product!.image}'),
-            height: 240.0,
-            width: double.infinity,
-          ),
-          if(model.product!.discount!=0)
-            Container(
-              color: Colors.red,
-              padding: EdgeInsets.symmetric(
-                horizontal: 10.0,
-              ),
-              child: Text(
-                'DISCOUNT',
-                style: TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-
-        ],
-      ),
+  Widget buildFavouriteItem(DataModel model,BuildContext context) =>
       Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${model.product!.name}',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                height: 1.2,
-                fontWeight: FontWeight.bold,
+        child: Container(
+          height: 120.0,
+          child: Row(
+       children: [
+          Stack(
+            alignment: AlignmentDirectional.bottomStart,
+            children: [
+              Image(
+                image: NetworkImage('${model.product!.image}'),
+                height: 120.0,
+                width: 120.0,
               ),
-            ),
-            Row(
+              if(model.product!.discount!=0)
+                Container(
+                  color: Colors.red,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                  ),
+                  child: Text(
+                    'DISCOUNT',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(
+            width: 20.0,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${model.product!.price}',
+                  '${model.product!.name}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 15.0,
-                    color: primaryColor,
+                    height: 1.2,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
-                  width: 20.0,
-                ),
-                if(model.product!.discount!=0)
-                  Text(
-                    '${model.product!.oldPrice}',
-                    style: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.lineThrough, decorationColor: Colors.cyan
-                    ),
-                  ),
                 Spacer(),
-                IconButton(
-                    onPressed: (){
-                      ShopCubit.getInstance(context).changeFavourite(model.id);
-                    },
-                    icon: CircleAvatar(
-                      radius: 18.0,
-                      backgroundColor: ShopCubit.getInstance(context).favourites[model.id] !=true ? Colors.grey :primaryColor ,
-                      child: Icon(
-                        Icons.favorite_border,
-                        color: Colors.white,
-                        size: 18.0,
+                Row(
+                  children: [
+                    Text(
+                      '${model.product!.price}',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: primaryColor,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    if(model.product!.discount!=0)
+                      Text(
+                        '${model.product!.oldPrice}',
+                        style: TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.lineThrough, decorationColor: Colors.cyan
+                        ),
+                      ),
+                    Spacer(),
+                    IconButton(
+                        onPressed: (){
+                          ShopCubit.getInstance(context).changeFavourite(model.product!.id);
+                        },
+                        icon: CircleAvatar(
+                          radius: 18.0,
+                          backgroundColor: ShopCubit.getInstance(context).favourites[model.product!.id] !=true ? Colors.grey :primaryColor ,
+                          child: Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                            size: 18.0,
+                          ),
+                        )
                     )
-                )
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
+        ],
+       ),
         ),
-      ),
-    ],
-  );
+      );
 }

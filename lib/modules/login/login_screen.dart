@@ -28,6 +28,7 @@ class LoginScreen extends StatelessWidget {
           if(state is LoginSuccessState) {
             if (state.loginModel.status) {
               CacheHelper.saveData(key: 'token', value: state.loginModel.data!.token);
+              token = state.loginModel.data!.token.toString();
               navigatAndFinish(context, ShopLayout());
             }
           else{
@@ -128,7 +129,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             defultTextButton(
                                 function: (){
-                                  navigatTo(context, const RegisterScreen());
+                                  navigatTo(context,  RegisterScreen());
                                 },
                                 text: 'register'
                             )

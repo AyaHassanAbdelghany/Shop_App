@@ -29,4 +29,12 @@ class ShopGetFavouriteSuccessState extends ShopStates{}
 
 class ShopGetFavouriteErrorState extends ShopStates{}
 
-class ShopFavouriteLoadingState extends ShopStates{}
+class ShopProfileSuccessState extends ShopStates{}
+
+class ShopProfileErrorState extends ShopStates{}
+
+class ShopUpdateProfileLoadingState extends ShopStates{}
+
+class ShopUpdateProfileSuccessState extends ShopStates{}
+
+class ShopUpdateProfileErrorState extends ShopStates{}

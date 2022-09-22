@@ -55,4 +55,25 @@ class DioHelper {
         queryParameters: query
     );
   }
+
+  static Future<Response>  putData({
+    required String url,
+    dynamic query,
+    required dynamic data,
+    String lang = VALUE_LANG,
+    String? token,
+  }) async{
+
+    dio.options.headers =
+    {
+      KEY_TYPE: VALUE_TYPE,
+      KEY_LANG: lang,
+      KEY_AUTHORIZATION: token ?? '',
+    };
+    return await dio.put(
+        url,
+        data: data,
+        queryParameters: query
+    );
+  }
 }

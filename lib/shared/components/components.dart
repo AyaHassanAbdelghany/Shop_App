@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../modules/login/login_screen.dart';
+import '../../network/local/cache_helper.dart';
+
 void navigatTo(context,widget) {
   Navigator.push(
       context,
@@ -43,7 +46,7 @@ Widget defultTextFormField({
               ? IconButton(onPressed: sufixOnPressed, icon: Icon(sufix))
               : null,
           border: OutlineInputBorder(),
-          hintText: label
+          label: Text(label)
       ),
       validator: functionValidator,
     ),
@@ -103,6 +106,22 @@ void defultToast({
       textColor: Colors.white,
       fontSize: 16.0
   );
+}
+
+void signOut(context)
+{
+  CacheHelper.removeData(
+    key: 'token',
+  ).then((value)
+  {
+    if (value)
+    {
+      navigatAndFinish(
+        context,
+        LoginScreen(),
+      );
+    }
+  });
 }
 
 Color? chooseColorToast(ToastStates state){

@@ -180,6 +180,7 @@ class HomeScreen extends StatelessWidget {
                   style: TextStyle(
                     height: 1.2,
                     fontWeight: FontWeight.bold,
+                    fontSize: 15.0,
                   ),
                 ),
                 Row(
