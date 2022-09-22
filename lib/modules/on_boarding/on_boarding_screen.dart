@@ -17,9 +17,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   var boardingController = PageController();
 
   List<OnBoardingModel> onBoardingList = [
-    OnBoardingModel('assets/images/onboard_1.jpg'),
-    OnBoardingModel('assets/images/onboard_2.jpg'),
-    OnBoardingModel('assets/images/onboard_3.jpg'),
+    OnBoardingModel('assets/images/onboard_1.jpg','Explore many products'),
+    OnBoardingModel('assets/images/onboard_2.jpg','Choose and checkout'),
+    OnBoardingModel('assets/images/onboard_3.jpg','Get easily shopping'),
   ];
   bool isLast = false;
 
@@ -71,16 +71,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             height: 10.0,
           ),
           Text(
-            'On Boarding Title',
+            '${model.text}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 25.0,
-            ),
-          ),
-          Text(
-            'body title',
-            style: TextStyle(
-              fontSize: 18.0,
             ),
           ),
           Padding(

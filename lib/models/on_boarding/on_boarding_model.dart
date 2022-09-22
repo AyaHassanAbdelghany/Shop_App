@@ -1,5 +1,7 @@
 class OnBoardingModel{
 
   final String image;
-   OnBoardingModel(this.image);
+  final String text;
+
+  OnBoardingModel(this.image,this.text);
 }
